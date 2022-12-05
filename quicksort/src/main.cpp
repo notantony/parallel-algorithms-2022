@@ -5,12 +5,14 @@
 
 #include "tbb/blocked_range.h"
 #include "tbb/parallel_reduce.h"
+#include "tbb/global_control.h"
 
 #include "qsort.cpp"
 #include "utils.h"
 
 
 int main(int argc, char **argv) {
+    tbb::global_control(tbb::global_control::max_allowed_parallelism, 4);
     if (argc != 3) {
         std::cout << "Usage: benchmark <values_cap> <seed>" << std::endl;
         return 1;
