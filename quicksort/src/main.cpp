@@ -13,6 +13,7 @@
 
 int main(int argc, char **argv) {
     tbb::global_control(tbb::global_control::max_allowed_parallelism, 4);
+    
     if (argc != 3) {
         std::cout << "Usage: benchmark <values_cap> <seed>" << std::endl;
         return 1;
@@ -21,20 +22,23 @@ int main(int argc, char **argv) {
     int seed = atoi(argv[2]);
     std::vector<int> data = generate_ints(mod, seed);
 
-#ifdef IO_BENCH
-    // do nothing
-#else
-    #ifdef ALGO_STD
-        std::qsort(data.data(), data.size(), sizeof(int), int_cmp);
-    #endif
+    auto start = std::chrono::system_clock::now();
 
-    #ifdef ALGO_SEQ
-        seq::qsort(data);
-    #endif
-
-    #ifdef ALGO_PAR
-        par::qsort(data);
-    #endif
+#ifdef ALGO_STD
+    std::qsort(data.data(), data.size(), sizeof(int), int_cmp);
 #endif
+
+#ifdef ALGO_SEQ
+    seq::qsort(data);
+#endif
+
+#ifdef ALGO_PAR
+    par::qsort(data);
+#endif
+
+    auto end = std::chrono::system_clock::now();
+    std::chrono::duration<double> diff = end - start;
+    std::cout << diff.count();
+
     return 0;
 }
