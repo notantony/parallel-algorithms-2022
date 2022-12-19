@@ -43,7 +43,8 @@ const size_t STUB_VALUE = std::numeric_limits<size_t>::max();
 
 std::vector<size_t> bfs(
     size_t nodes_total, size_t start_idx,
-    std::function<std::vector<size_t>(size_t)> get_neighbours) {
+    std::function<std::vector<size_t>(size_t)> get_neighbours,
+    std::function<size_t(size_t)> get_neighbours_sizes) {
     std::vector<size_t> frontier = {start_idx};
     std::vector<std::atomic_uint8_t> flags(nodes_total);
     std::atomic_uint8_t *flags_ptr = flags.data();
@@ -61,7 +62,7 @@ std::vector<size_t> bfs(
 
         std::vector<size_t> positions = my_tbb::parallel_map<size_t, size_t>(frontier,
             [=, &get_neighbours](size_t i) {
-                return get_neighbours(i).size(); 
+                return get_neighbours_sizes(i); 
             });
         my_tbb::apply_sum_scan(positions, false);
 

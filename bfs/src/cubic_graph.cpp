@@ -44,4 +44,10 @@ std::vector<size_t> get_neighbours(uint32_t side, size_t idx) {
     return _get_neighbours(side, Coord(side, idx));
 }
 
+size_t get_neighbours_sizes(uint32_t side, size_t idx) {
+    Coord coord(side, idx);
+    int borders = (coord.x > 0 && coord.x + 1 < side) + (coord.y > 0 && coord.y + 1 < side) + (coord.z > 0 && coord.z + 1 < side);
+    return 3 + borders;
+}
+
 }  // namespace CubicGraph

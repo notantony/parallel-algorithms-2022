@@ -22,16 +22,17 @@ int main(int argc, char **argv) {
     int size = atoi(argv[1]);
     size_t nodes_total = static_cast<uint64_t> (size) * size * size;
 
-    const auto get_neighbours_with_size = std::bind(CubicGraph::get_neighbours, size, std::placeholders::_1);
+    const auto get_neighbours = std::bind(CubicGraph::get_neighbours, size, std::placeholders::_1);
+    const auto get_sizes = std::bind(CubicGraph::get_neighbours_sizes, size, std::placeholders::_1);
 
     auto start = std::chrono::high_resolution_clock::now();
 
 #ifdef ALGO_SEQ
-    std::vector<size_t> results = seq::bfs(nodes_total, 0, get_neighbours_with_size);
+    std::vector<size_t> results = seq::bfs(nodes_total, 0, get_neighbours);
 #endif
 
 #ifdef ALGO_PAR
-    std::vector<size_t> results = par::bfs(nodes_total, 0, get_neighbours_with_size);
+    std::vector<size_t> results = par::bfs(nodes_total, 0, get_neighbours, get_sizes);
 #endif
 
     auto end = std::chrono::high_resolution_clock::now();

@@ -24,13 +24,14 @@ int main(int argc, char **argv) {
     my_tbb::apply_sum_scan(v, true);
     dump_vector(v);
 
-    const auto get_neighbours_with_size = std::bind(CubicGraph::get_neighbours, size, std::placeholders::_1);
+    const auto get_neighbours = std::bind(CubicGraph::get_neighbours, size, std::placeholders::_1);
+    const auto get_sizes = std::bind(CubicGraph::get_neighbours_sizes, size, std::placeholders::_1);
 
-    std::vector<size_t> seq_distances = seq::bfs(nodes_total, 0, get_neighbours_with_size);
-    std::vector<size_t> par_distances = par::bfs(nodes_total, 0, get_neighbours_with_size);
+    std::vector<size_t> seq_distances = seq::bfs(nodes_total, 0, get_neighbours);
+    std::vector<size_t> par_distances = par::bfs(nodes_total, 0, get_neighbours, get_sizes);
 
-    // dump_cubic(seq_distances, 3);
-    // dump_cubic(par_distances, 3);
+    // dump_cubic(seq_distances, size);
+    // dump_cubic(par_distances, size);
     // dump_vector(par_distances);
 
     assert(par_distances == seq_distances);
